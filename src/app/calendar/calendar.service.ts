@@ -1,20 +1,22 @@
-import {computed, Injectable, signal} from '@angular/core';
-import {BehaviorSubject, map, Observable, switchMap, tap} from 'rxjs';
-import {toSignal} from '@angular/core/rxjs-interop';
+import {inject, Injectable} from '@angular/core';
+import {BehaviorSubject, map, Observable, switchMap} from 'rxjs';
 import {CalendarAppointment, CalendarDay, CalendarMonth, CalendarWeek} from './models/calendar.models';
 import {getUniqueId} from '../utils';
 import {WEEKS_PER_MONTH} from '../core/constants/calendar-grid.constants';
+import {LocalStorageService} from '../core/services/localStorage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CalendarService {
-  // Signals
+  private localStorageService = inject(LocalStorageService);
+
   private appointments$$ = new BehaviorSubject<CalendarAppointment[]>([]);
   private currentDate$$ = new BehaviorSubject<Date>(new Date());
+  private slideDirection$$ = new BehaviorSubject<'next' | 'prev' | null>(null);
 
-  public getAppointments$: Observable<CalendarAppointment[]> = this.appointments$$.asObservable();
   public currentDate$: Observable<Date> = this.currentDate$$.asObservable();
+  public slideDirection$ = this.slideDirection$$.asObservable();
 
   public calendarMonth$: Observable<CalendarMonth> = this.currentDate$.pipe(
     switchMap(date =>
@@ -27,6 +29,7 @@ export class CalendarService {
   }
 
   public nextMonth(): void {
+    this.slideDirection$$.next('next');
     const currentDate = this.currentDate$$.value;
     const nextMonth = new Date(currentDate);
     nextMonth.setMonth(nextMonth.getMonth() + 1);
@@ -34,10 +37,15 @@ export class CalendarService {
   }
 
   public previousMonth(): void {
+    this.slideDirection$$.next('prev');
     const currentDate = this.currentDate$$.value;
     const prevMonth = new Date(currentDate);
     prevMonth.setMonth(prevMonth.getMonth() - 1);
     this.currentDate$$.next(prevMonth);
+  }
+
+  resetSlideDirection() {
+    this.slideDirection$$.next(null);
   }
 
   public goToToday(): void {
@@ -49,7 +57,7 @@ export class CalendarService {
     const currentAppointments = [...this.appointments$$.value];
     currentAppointments.push(appointment);
     this.appointments$$.next(currentAppointments);
-    this.saveToLocalStorage();
+    this.saveAppointments();
   }
 
   public updateAppointment(updatedAppointment: CalendarAppointment): void {
@@ -58,14 +66,14 @@ export class CalendarService {
     if (index !== -1) {
       currentAppointments[index] = updatedAppointment;
       this.appointments$$.next(currentAppointments);
-      this.saveToLocalStorage();
+      this.saveAppointments();
     }
   }
 
   public deleteAppointment(id: string): void {
     const currentAppointments = this.appointments$$.value.filter(app => app.id !== id);
     this.appointments$$.next(currentAppointments);
-    this.saveToLocalStorage();
+    this.saveAppointments();
   }
 
   public getAppointmentsByDate(date: Date): Observable<CalendarAppointment[]> {
@@ -93,7 +101,7 @@ export class CalendarService {
       currentAppointments[index] = appointment;
 
       this.appointments$$.next(currentAppointments);
-      this.saveToLocalStorage();
+      this.saveAppointments();
     }
   }
 
@@ -148,18 +156,12 @@ export class CalendarService {
     });
   }
 
-  private saveToLocalStorage(): void {
-    localStorage.setItem('appointments', JSON.stringify(this.appointments$$.value));
+  private initAppointments() {
+    const savedAppointments = this.localStorageService.getAppointments();
+    this.appointments$$.next(savedAppointments);
   }
 
-  private initAppointments() {
-    const savedAppointments = localStorage.getItem('appointments');
-    if (savedAppointments) {
-      const appointments = JSON.parse(savedAppointments) as CalendarAppointment[];
-      appointments.forEach(appointment => {
-        appointment.date = new Date(appointment.date);
-      });
-      this.appointments$$.next(appointments);
-    }
+  private saveAppointments() {
+    this.localStorageService.saveAppointments(this.appointments$$.value);
   }
 }

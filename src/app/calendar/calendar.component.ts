@@ -1,7 +1,16 @@
-import {Component, computed, inject, signal, viewChild, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  ElementRef,
+  inject,
+  signal,
+  viewChild
+} from '@angular/core';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
-import {CdkDrag, CdkDragDrop, CdkDropList} from '@angular/cdk/drag-drop';
+import {CdkDragDrop} from '@angular/cdk/drag-drop';
 import {AppointmentFormComponent} from './components/appointment-form/appointment-form.component';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {CalendarAppointment, CalendarDay} from './models/calendar.models';
@@ -12,33 +21,48 @@ import {CalendarHeaderComponent} from './components/calendar-header/calendar-hea
 import {ResizeDirective} from '../core/directives/resize.directive';
 import {ElementSize} from '../core/models/resize.model';
 import {WEEKS_PER_MONTH} from '../core/constants/calendar-grid.constants';
+import {animate, style, transition, trigger} from '@angular/animations';
+import {provideAnimations} from '@angular/platform-browser/animations';
+import {CalendarDayComponent} from './components/calendar-day/calendar-day.component';
 
 @Component({
   selector: 'app-calendar',
   imports: [
     MatIcon,
     MatButton,
-    CdkDropList,
     AppointmentFormComponent,
-    CdkDrag,
     MatMenuModule,
     MatNativeDateModule,
     CalendarHeaderComponent,
-    ResizeDirective
+    ResizeDirective,
+    CalendarDayComponent
   ],
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.scss',
-  standalone: true
+  standalone: true,
+  providers: [provideAnimations()],
+  animations: [
+    trigger('slideAnimation', [
+      transition('* => next', [
+        style({transform: 'translateX(100%)', opacity: 0}),
+        animate('100ms ease-out', style({transform: 'translateX(0)', opacity: 1}))
+      ]),
+      transition('* => prev', [
+        style({transform: 'translateX(-100%)', opacity: 0}),
+        animate('100ms ease-out', style({transform: 'translateX(0)', opacity: 1}))
+      ])
+    ])
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarComponent {
   private calendarService = inject(CalendarService);
 
-  public activeTrigger = signal<MatMenuTrigger | null>(null);
+  public calendarSectionEl = viewChild<ElementRef>('calendarSectionRef');
 
-  public selectedAppointment = signal<CalendarAppointment | null>(null);
-  public selectedDate = signal<Date | null>(null);
-
+  public slideDirection = toSignal(this.calendarService.slideDirection$);
   public calendarMonth = toSignal(this.calendarService.calendarMonth$);
+
   public allDayIds = computed(() => {
     return this.calendarMonth()?.weeks.flatMap(week => week.days.flatMap(day => day.id));
   });
@@ -52,54 +76,19 @@ export class CalendarComponent {
 
   public daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-  public isEditMode = signal(false);
-
-  public handleDayClick(day: CalendarDay, menuTrigger: MatMenuTrigger): void {
-    this.isEditMode.set(false);
-    this.activeTrigger.set(menuTrigger);
-    this.selectedDate.set(day.date);
-    this.selectedAppointment.set(null);
+  constructor() {
+    effect(() => {
+      if (this.calendarSectionEl()?.nativeElement) {
+        this.wheelListener();
+      }
+    });
   }
 
-  public handleAppointmentClick(appointment: CalendarAppointment, menuTrigger: MatMenuTrigger, event: Event): void {
-    event.stopPropagation();
-    this.isEditMode.set(true);
-    this.activeTrigger.set(menuTrigger);
-    this.selectedDate.set(null);
-    this.selectedAppointment.set(appointment);
-    menuTrigger.openMenu();
-  }
+  public handleDayClick(day: CalendarDay, menuTrigger: MatMenuTrigger): void {}
 
-  handleAddCustomEvenClick(menuTrigger: MatMenuTrigger) {
-    this.isEditMode.set(false);
-    this.selectedDate.set(null);
-    this.activeTrigger.set(menuTrigger);
-    menuTrigger.openMenu();
-  }
-
-  public closeMenu(): void {
-    if (this.activeTrigger() && this.activeTrigger()!.menuOpen) {
-      this.activeTrigger()!.closeMenu();
-    }
-  }
-
-  public saveAppointment(appointment: CalendarAppointment): void {
-    this.calendarService.addAppointment(appointment);
-    this.closeMenu();
-  }
-
-  public updateAppointment(appointment: CalendarAppointment): void {
-    this.calendarService.updateAppointment(appointment);
-    this.closeMenu();
-  }
-
-  public deleteAppointment(id: string): void {
-    this.calendarService.deleteAppointment(id);
-    this.closeMenu();
-  }
+  public handleAppointmentClick(appointment: CalendarAppointment, menuTrigger: MatMenuTrigger, event: Event): void {}
 
   public onDrop(event: CdkDragDrop<Date>): void {
-    console.log(event);
     if (event.previousContainer === event.container) {
       return;
     }
@@ -115,7 +104,22 @@ export class CalendarComponent {
     this.calendarService.moveAppointment(appointment.id, updatedDate);
   }
 
-  public handleCloseMenu(): void {
-    this.activeTrigger.set(null);
+  public onAnimationDone(): void {
+    this.calendarService.resetSlideDirection();
+  }
+
+  private wheelListener() {
+    this.calendarSectionEl()!.nativeElement.addEventListener(
+      'wheel',
+      (event: WheelEvent) => {
+        event.preventDefault();
+        if (event.deltaY > 0) {
+          this.calendarService.nextMonth();
+        } else {
+          this.calendarService.previousMonth();
+        }
+      },
+      {passive: false}
+    );
   }
 }

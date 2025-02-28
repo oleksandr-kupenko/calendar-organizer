@@ -1,6 +1,6 @@
-<mat-card>
+<mat-card (click)="$event.stopPropagation()">
   <mat-card-header>
-    <mat-card-title>{{ editAppointmentMode() ? "Edit Event" : "Add New Event" }}</mat-card-title>
+    <mat-card-title>{{ isEditAppointmentMode() ? "Edit Event" : "Add New Event" }}</mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
@@ -34,7 +34,9 @@
       <div class="form-row">
         <mat-form-field appearance="fill">
           <mat-label>Start Time</mat-label>
-          <input matInput type="time" formControlName="startTime" required />
+          <input matInput [matTimepicker]="startTimePicker" formControlName="startTime" required />
+          <mat-timepicker-toggle matIconSuffix [for]="startTimePicker"></mat-timepicker-toggle>
+          <mat-timepicker #startTimePicker></mat-timepicker>
           @if (appointmentForm.get("startTime")?.hasError("required") && appointmentForm.get("startTime")?.touched) {
             <mat-error>Start time is required</mat-error>
           }
@@ -42,7 +44,9 @@
 
         <mat-form-field appearance="fill">
           <mat-label>End Time</mat-label>
-          <input matInput type="time" formControlName="endTime" required />
+          <input matInput [matTimepicker]="endTimePicker" formControlName="endTime" required />
+          <mat-timepicker-toggle matIconSuffix [for]="endTimePicker"></mat-timepicker-toggle>
+          <mat-timepicker #endTimePicker></mat-timepicker>
           @if (appointmentForm.get("endTime")?.hasError("required") && appointmentForm.get("endTime")?.touched) {
             <mat-error>End time is required</mat-error>
           }
@@ -58,20 +62,18 @@
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Color</mat-label>
         <mat-select formControlName="color">
-          <mat-option value="#ff4081">Pink</mat-option>
-          <mat-option value="#3f51b5">Blue</mat-option>
-          <mat-option value="#4caf50">Green</mat-option>
-          <mat-option value="#ff9800">Orange</mat-option>
-          <mat-option value="#9c27b0">Purple</mat-option>
+          @for (option of colorsOptions; track option.name) {
+            <mat-option [value]="option.value">{{ option.name }}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
 
       <div class="form-actions">
         <button type="button" mat-button (click)="onCancel()">Cancel</button>
         <button type="submit" mat-raised-button color="primary" [disabled]="!appointmentForm.valid">
-          {{ editAppointmentMode() ? "Update" : "Add" }}
+          {{ isEditAppointmentMode() ? "Update" : "Add" }}
         </button>
-        @if (editAppointmentMode()) {
+        @if (isEditAppointmentMode()) {
           <button type="button" mat-raised-button color="warn" (click)="onDelete()">Delete</button>
         }
       </div>

@@ -1,0 +1,45 @@
+<div
+  #menuTrigger="matMenuTrigger"
+  cdkDropList
+  class="calendar-day"
+  [class.outside-month]="!day().isCurrentMonth"
+  [class.today]="day().isToday"
+  [style.height.px]="dayCellSize().height"
+  [style.width.px]="dayCellSize().width"
+  [id]="day().id"
+  [cdkDropListData]="day().date"
+  (cdkDropListDropped)="onDrop($event)"
+  [cdkDropListConnectedTo]="allDayIds()"
+  [matMenuTriggerFor]="dayMenu"
+  (click)="handleDayClick(menuTrigger)"
+>
+  <div class="day-header">
+    <span class="day-number">{{ day().date.getDate() }}</span>
+  </div>
+
+  <div class="day-content">
+    @for (appointment of day().appointments; track appointment.id) {
+      <div
+        class="appointment"
+        [style.background-color]="appointment.color"
+        cdkDrag
+        [cdkDragData]="appointment"
+        (click)="handleAppointmentClick(appointment, menuTrigger, $event)"
+      >
+        <div class="appointment-time">{{ appointment.startTime }} - {{ appointment.endTime }}</div>
+        <div class="appointment-title">
+          {{ appointment.title }}
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<mat-menu #dayMenu="matMenu" xPosition="after" yPosition="above">
+  <app-appointment-form
+    [isEditAppointmentMode]="isEditMode()"
+    [menuTrigger]="activeFormMenuTrigger()"
+    [selectedDate]="selectedDate()"
+    [appointment]="selectedAppointment()"
+  ></app-appointment-form>
+</mat-menu>

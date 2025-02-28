@@ -1,4 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+html {
+  color-scheme: light dark;
+  @include mat.theme((
+    color: mat.$violet-palette,
+    typography: Roboto,
+    density: 0
+  ));
+}
+
 
 html,
 body {
@@ -20,30 +30,4 @@ body {
   box-sizing: border-box;
 }
 
-.cdk-drag-preview {
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
-  opacity: 0.8;
-}
 
-.cdk-drag-placeholder {
-  opacity: 0.3;
-}
-
-.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.cdk-drop-list-dragging .cdk-drag {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.cdk-overlay-pane {
-  .mat-mdc-menu-panel {
-    border-radius: 10px;
-    max-width: 380px;
-
-    .mat-mdc-menu-content {
-      padding: 0;
-    }
-  }
-}

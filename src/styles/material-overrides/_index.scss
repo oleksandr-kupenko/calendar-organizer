@@ -1,0 +1,28 @@
+body {
+  .cdk-drag-placeholder {
+    opacity: 0.3;
+  }
+
+  .cdk-overlay-pane {
+    .mat-mdc-menu-panel {
+      border-radius: 10px;
+      max-width: 380px;
+
+      .mat-mdc-menu-content {
+        padding: 0;
+      }
+    }
+  }
+
+  button.mat-mdc-raised-button:not(:disabled) {
+    &.mat-primary {
+      background-color: var(--color-primary-active);
+      color: white;
+    }
+
+    &.mat-warn {
+      background: var(--color-warn) !important;
+      color: white !important;
+    }
+  }
+}
