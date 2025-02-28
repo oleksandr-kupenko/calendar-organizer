@@ -1,0 +1,10 @@
+{
+  "printWidth": 120,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "quotes": ["warning", "single", {"avoidEscape": true}],
+  "trailingComma": "none",
+  "bracketSpacing": false,
+  "arrowParens": "avoid"
+}

@@ -1,0 +1,81 @@
+<app-calendar-header>
+  <button
+    mat-raised-button
+    color="primary"
+    #menuTrigger="matMenuTrigger"
+    [matMenuTriggerFor]="menu"
+    (menuClosed)="handleCloseMenu()"
+    (click)="handleAddCustomEvenClick(menuTrigger)"
+  >
+    <mat-icon>add</mat-icon> Add event
+  </button>
+</app-calendar-header>
+<div class="calendar-container">
+  <div class="calendar-view">
+    <div class="calendar-header">
+      @for (day of daysOfWeek; track day) {
+        <div class="calendar-header-cell">{{ day }}</div>
+      }
+    </div>
+
+    <div class="calendar-grid" (listenResize)="calendarGridSize.set($event)">
+      @for (week of calendarMonth()!.weeks; track $index) {
+        @for (day of week.days; track day.date.getTime()) {
+          <div
+            #menuTrigger="matMenuTrigger"
+            cdkDropList
+            class="calendar-day"
+            [class.outside-month]="!day.isCurrentMonth"
+            [class.today]="day.isToday"
+            [style.height.px]="dayCellSize()!.height"
+            [style.width.px]="dayCellSize()!.width"
+            [id]="day.id"
+            [cdkDropListData]="day.date"
+            (cdkDropListDropped)="onDrop($event)"
+            [cdkDropListConnectedTo]="allDayIds() || []"
+            [matMenuTriggerFor]="menu"
+            (menuClosed)="handleCloseMenu()"
+            (click)="handleDayClick(day, menuTrigger)"
+          >
+            <div class="day-header">
+              <span class="day-number">{{ day.date.getDate() }}</span>
+            </div>
+
+            <div class="day-content">
+              @for (appointment of day.appointments; track appointment.id) {
+                <div
+                  class="appointment"
+                  [style.background-color]="appointment.color"
+                  cdkDrag
+                  [cdkDragData]="appointment"
+                  (click)="handleAppointmentClick(appointment, menuTrigger, $event)"
+                >
+                  <div class="appointment-time">{{ appointment.startTime }} - {{ appointment.endTime }}</div>
+                  <div class="appointment-title">
+                    {{ appointment.title }}
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</div>
+
+<mat-menu #menu="matMenu" xPosition="after" yPosition="above">
+  <div class="appointment-form-container" (click)="$event.stopPropagation()">
+    @if (activeTrigger()) {
+      <app-appointment-form
+        [appointment]="selectedAppointment()"
+        [selectedDate]="selectedDate()"
+        [editAppointmentMode]="isEditMode()"
+        (save)="saveAppointment($event)"
+        (cancel)="closeMenu()"
+        (update)="updateAppointment($event)"
+        (delete)="deleteAppointment($event)"
+      ></app-appointment-form>
+    }
+  </div>
+</mat-menu>

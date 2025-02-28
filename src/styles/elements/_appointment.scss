@@ -1,0 +1,14 @@
+.appointment,
+.appointment.cdk-drag-preview,
+.appointment.cdk-drag-placeholder {
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: white;
+  font-size: 12px;
+
+  .appointment-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

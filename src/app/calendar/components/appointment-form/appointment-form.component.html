@@ -1,0 +1,80 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ editAppointmentMode() ? "Edit Event" : "Add New Event" }}</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" required />
+        @if (appointmentForm.get("title")?.hasError("required") && appointmentForm.get("title")?.touched) {
+          <mat-error>Title is required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" rows="3"></textarea>
+      </mat-form-field>
+
+      <div class="form-row">
+        <mat-form-field appearance="fill">
+          <mat-label>Date</mat-label>
+          <input matInput [matDatepicker]="datePicker" formControlName="date" required />
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+          <mat-datepicker #datePicker></mat-datepicker>
+          @if (appointmentForm.get("date")?.hasError("required") && appointmentForm.get("date")?.touched) {
+            <mat-error>Date is required</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="fill">
+          <mat-label>Start Time</mat-label>
+          <input matInput type="time" formControlName="startTime" required />
+          @if (appointmentForm.get("startTime")?.hasError("required") && appointmentForm.get("startTime")?.touched) {
+            <mat-error>Start time is required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>End Time</mat-label>
+          <input matInput type="time" formControlName="endTime" required />
+          @if (appointmentForm.get("endTime")?.hasError("required") && appointmentForm.get("endTime")?.touched) {
+            <mat-error>End time is required</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="common-error">
+          @if (appointmentForm.hasError("timeRange")) {
+            <mat-error>End time must be after start time</mat-error>
+          }
+        </div>
+      </div>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Color</mat-label>
+        <mat-select formControlName="color">
+          <mat-option value="#ff4081">Pink</mat-option>
+          <mat-option value="#3f51b5">Blue</mat-option>
+          <mat-option value="#4caf50">Green</mat-option>
+          <mat-option value="#ff9800">Orange</mat-option>
+          <mat-option value="#9c27b0">Purple</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="form-actions">
+        <button type="button" mat-button (click)="onCancel()">Cancel</button>
+        <button type="submit" mat-raised-button color="primary" [disabled]="!appointmentForm.valid">
+          {{ editAppointmentMode() ? "Update" : "Add" }}
+        </button>
+        @if (editAppointmentMode()) {
+          <button type="button" mat-raised-button color="warn" (click)="onDelete()">Delete</button>
+        }
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
