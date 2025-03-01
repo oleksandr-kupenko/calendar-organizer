@@ -51,4 +51,11 @@ export class CalendarDayCellComponent {
     this.selectedAppointment.set(appointment);
     trigger.openMenu();
   }
+
+  public handleMenuClose() {
+    this.isEditMode.set(false);
+    this.activeFormMenuTrigger.set(null);
+    this.selectedDate.set(null);
+    this.selectedAppointment.set(null);
+  }
 }

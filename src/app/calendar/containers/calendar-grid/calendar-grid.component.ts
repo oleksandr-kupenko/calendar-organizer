@@ -1,19 +1,29 @@
-import {Component, computed, effect, ElementRef, inject, OnDestroy, signal, viewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  ElementRef,
+  inject,
+  OnDestroy,
+  signal,
+  viewChild
+} from '@angular/core';
 import {AppointmentFormComponent} from './components/appointment-form/appointment-form.component';
 import {CalendarDayCellComponent} from '@calendar/containers/calendar-grid/components/calendar-day-cell/calendar-day-cell.component';
 import {CalendarHeaderComponent} from './components/calendar-header/calendar-header.component';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
-import {MatMenu, MatMenuModule, MatMenuTrigger} from '@angular/material/menu';
+import {MatMenuModule, MatMenuTrigger} from '@angular/material/menu';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {CalendarService} from '../../calendar.service';
 import {toSignal} from '@angular/core/rxjs-interop';
-import {ElementSize} from '../../../core/models/resize.model';
-import {WEEKS_PER_MONTH} from '../../../core/constants/calendar-grid.constants';
+import {ElementSize} from '@core/models/resize.model';
+import {WEEKS_PER_MONTH} from '@core/constants/calendar-grid.constants';
 import {CalendarAppointment, CalendarDay} from '../../models/calendar.models';
 import {CdkDragDrop} from '@angular/cdk/drag-drop';
 import {MatNativeDateModule} from '@angular/material/core';
-import {ResizeDirective} from '../../../core/directives/resize.directive';
+import {ResizeDirective} from '@core/directives/resize.directive';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 
 @Component({
@@ -108,6 +118,7 @@ export class CalendarGridComponent implements OnDestroy {
     this.wheelEventHandler = (event: WheelEvent) => {
       const targetElement = event.target as HTMLElement;
       const cellContent = targetElement.closest('.day-content');
+
       if (cellContent && cellContent.scrollHeight > cellContent.clientHeight) {
         return;
       }

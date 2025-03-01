@@ -25,6 +25,7 @@ export interface CalendarDay {
 
 export interface CalendarWeek {
   days: CalendarDay[];
+  id: string;
 }
 
 export interface CalendarMonth {

@@ -8,6 +8,8 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import {MatButtonModule} from '@angular/material/button';
 import {DATE_FORMAT, THEME_MODE, TIME_FORMAT} from 'src/app/settings/models/settings.models';
+import {pipe, take} from 'rxjs';
+import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'app-settings',
@@ -53,22 +55,24 @@ export class SettingsComponent implements OnInit {
   }
 
   private initForm(): void {
-    this.settingsForm = this.fb.group({
-      timeFormat: [TIME_FORMAT.twentyFourHour],
-      dateFormat: [DATE_FORMAT.mmDdYyyy],
-      theme: [THEME_MODE.auto]
-    });
+    this.settingsForm = this.fb.group(this.settingsService.getDefaultSettings());
   }
 
   private loadCurrentSettings(): void {
-    const currentSettings = this.settingsService.getCurrentSettings();
-    if (currentSettings) {
-      this.settingsForm.patchValue({
-        timeFormat: currentSettings.timeFormat,
-        dateFormat: currentSettings.dateFormat,
-        theme: currentSettings.theme
+    this.settingsService.getSettings$
+      .pipe(
+        filter(settings => !!settings),
+        take(1)
+      )
+      .subscribe(settings => {
+        if (settings) {
+          this.settingsForm.patchValue({
+            timeFormat: settings.timeFormat,
+            dateFormat: settings.dateFormat,
+            theme: settings.theme
+          });
+        }
       });
-    }
   }
 
   public onSubmit(): void {
@@ -82,10 +86,6 @@ export class SettingsComponent implements OnInit {
   }
 
   public resetToDefaults(): void {
-    this.settingsForm.setValue({
-      timeFormat: TIME_FORMAT.twentyFourHour,
-      dateFormat: DATE_FORMAT.mmDdYyyy,
-      theme: THEME_MODE.auto
-    });
+    this.settingsForm.setValue(this.settingsService.getDefaultSettings());
   }
 }

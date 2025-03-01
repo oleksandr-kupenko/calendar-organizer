@@ -38,11 +38,13 @@
   </div>
 </div>
 
-<mat-menu #dayMenu="matMenu" xPosition="after" yPosition="above">
-  <app-appointment-form
-    [isEditAppointmentMode]="isEditMode()"
-    [menuTrigger]="activeFormMenuTrigger()"
-    [selectedDate]="selectedDate()"
-    [appointment]="selectedAppointment()"
-  ></app-appointment-form>
+<mat-menu #dayMenu="matMenu" xPosition="after" yPosition="above" (closed)="handleMenuClose()">
+  @if (activeFormMenuTrigger()) {
+    <app-appointment-form
+      [isEditAppointmentMode]="isEditMode()"
+      [menuTrigger]="activeFormMenuTrigger()"
+      [selectedDate]="selectedDate()"
+      [appointment]="selectedAppointment()"
+    ></app-appointment-form>
+  }
 </mat-menu>

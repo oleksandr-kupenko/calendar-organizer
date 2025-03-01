@@ -22,6 +22,10 @@ import {CalendarService} from '@calendar/calendar.service';
 import {MatMenuTrigger} from '@angular/material/menu';
 import {APPOINTMENTS_COLORS} from '@core/constants/appointment.constants';
 import {DateAdapter, MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core';
+import {ThemeService} from '@core/services/theme.service';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {SettingsService} from 'src/app/settings/settings.service';
+import {TIME_FORMAT} from 'src/app/settings/models/settings.models';
 
 @Component({
   selector: 'app-appointment-form',
@@ -50,6 +54,8 @@ export class AppointmentFormComponent implements OnInit {
   private calendarService = inject(CalendarService);
   private readonly _adapter = inject<DateAdapter<unknown, unknown>>(DateAdapter);
 
+  private settings = toSignal(inject(SettingsService).getSettings$);
+
   appointment = input<CalendarAppointment | null>(null);
   selectedDate = input<Date | null>(null);
   isEditAppointmentMode = input.required<boolean>();
@@ -72,11 +78,20 @@ export class AppointmentFormComponent implements OnInit {
         this.setSelectedDate();
       }
     });
+
+    effect(() => {
+      if (this.settings()?.timeFormat === TIME_FORMAT.twelveHour) {
+        console.log(1);
+        this._adapter.setLocale('en-US');
+      } else {
+        console.log(2);
+        this._adapter.setLocale('en-GB');
+      }
+    });
   }
 
   ngOnInit() {
     this.initForm();
-    this._adapter.setLocale('en-GB');
   }
 
   public onSubmit(): void {

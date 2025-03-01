@@ -2,4 +2,19 @@
   --color-primary-active: #1775f5;
   --color-warn: #f06292;
   --mat-sys-primary: #1775f5;
+
+  --contrast-color: var(--mat-sys-on-surface);
+  --secondary-contrast: #000000bf;
+
+  --secondary-bg: #f9f9f9;
+  --dark-bg: #f5f5f5;
+  --light-bg: #e8f5e9;
+}
+
+[data-theme="dark"] {
+  --secondary-contrast: #a9a0a0bf;
+
+  --secondary-bg: #292929;
+  --dark-bg: #000000;
+  --light-bg: #1d271e;
 }

@@ -76,7 +76,6 @@ export class SingleDayComponent implements OnInit {
       )
       .subscribe(({date, appointments}) => {
         if (date) {
-          console.log('set');
           this.setAppointmentsByDate();
         }
       });
@@ -114,6 +113,13 @@ export class SingleDayComponent implements OnInit {
 
     const nextDay = `${nextDate.getFullYear()}-${nextDate.getMonth() + 1}-${nextDate.getDate()}`;
     this.router.navigate(['calendar', 'day', nextDay]);
+  }
+
+  public handleMenuClose() {
+    this.isEditMode.set(false);
+    this.activeFormMenuTrigger.set(null);
+    this.selectedDate.set(null);
+    this.selectedAppointment.set(null);
   }
 
   private setAppointmentsByDate(): void {

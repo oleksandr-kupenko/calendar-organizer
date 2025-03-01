@@ -33,7 +33,6 @@ export class CalendarHeaderComponent {
   }
 
   nextMonth(): void {
-    console.log('NEXT');
     this.calendarService.nextMonth();
   }
 

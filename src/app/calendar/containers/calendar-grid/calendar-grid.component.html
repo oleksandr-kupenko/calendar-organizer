@@ -10,16 +10,11 @@
         <div class="calendar-header-cell">{{ day }}</div>
       }
     </div>
-    <div class="calendar-grid-wrapper" (listenResize)="calendarGridSize.set($event)">
+    <div #calendarSectionRef class="calendar-grid-wrapper" (listenResize)="calendarGridSize.set($event)">
       @if (dayCellSize().width) {
-        <div
-          #calendarSectionRef
-          class="calendar-grid"
-          [@slideAnimation]="slideDirection()"
-          (@slideAnimation.done)="onAnimationDone()"
-        >
-          @for (week of calendarMonth()!.weeks; track $index) {
-            @for (day of week.days; track day.date.getTime()) {
+        <div class="calendar-grid" [@slideAnimation]="slideDirection()" (@slideAnimation.done)="onAnimationDone()">
+          @for (week of calendarMonth()!.weeks; track week.id) {
+            @for (day of week.days; track day.id) {
               <app-calendar-day-cell
                 [day]="day"
                 [dayCellSize]="dayCellSize()"
@@ -40,6 +35,8 @@
 
 <mat-menu #menu="matMenu" xPosition="after" yPosition="above">
   <div class="appointment-form-container" (click)="$event.stopPropagation()">
-    <app-appointment-form [menuTrigger]="menuTrigger" [isEditAppointmentMode]="false"></app-appointment-form>
+    @if (menuTrigger) {
+      <app-appointment-form [menuTrigger]="menuTrigger" [isEditAppointmentMode]="false"></app-appointment-form>
+    }
   </div>
 </mat-menu>

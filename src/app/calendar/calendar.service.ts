@@ -153,7 +153,7 @@ export class CalendarService {
         currentDate.setDate(currentDate.getDate() + 1);
       }
 
-      weeks.push({days});
+      weeks.push({days, id: getUniqueId()});
     }
 
     return {year, month, weeks};
