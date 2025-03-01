@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {CalendarAppointment} from '../../calendar/models/calendar.models';
+import {CalendarAppointment} from '@calendar/models/calendar.models';
 
 @Injectable({providedIn: 'root'})
 export class LocalStorageService {

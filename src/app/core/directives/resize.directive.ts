@@ -49,10 +49,12 @@ export class ResizeDirective implements OnDestroy {
         const entry = entries[0];
         const width = entry.contentRect.width;
         const height = entry.contentRect.height;
+
         if (!this.skipFirstValue() || (this.skipFirstValue() && !this.isFirstValue)) {
           this.emitResizeWithDelay({width, height});
+        } else {
+          this.isFirstValue = false;
         }
-        this.isFirstValue = false;
       });
     });
 
@@ -62,6 +64,14 @@ export class ResizeDirective implements OnDestroy {
   private emitResizeWithDelay(size: ElementSize) {
     if (this.resizeTimeout) {
       clearTimeout(this.resizeTimeout);
+    }
+
+    if (this.isFirstValue) {
+      this.isFirstValue = false;
+      this.zone.run(() => {
+        this.listenResize.emit(size);
+      });
+      return;
     }
 
     this.resizeTimeout = setTimeout(() => {

@@ -1,14 +1,16 @@
-import {Component, Input, Output, EventEmitter, input, signal} from '@angular/core';
+import {Component, Input, Output, EventEmitter, input, signal, computed} from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDropList} from '@angular/cdk/drag-drop';
 import {MatMenuModule, MatMenuTrigger} from '@angular/material/menu';
-import {CalendarAppointment, CalendarDay} from '../../models/calendar.models';
-import {ElementSize} from '../../../core/models/resize.model';
+import {CalendarAppointment, CalendarDay} from '../../../../models/calendar.models';
+import {ElementSize} from '@core/models/resize.model';
 import {AppointmentFormComponent} from '../appointment-form/appointment-form.component';
+import {RouterLink} from '@angular/router';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'app-calendar-day',
   templateUrl: './calendar-day.component.html',
-  imports: [CdkDrag, CdkDropList, MatMenuModule, AppointmentFormComponent],
+  imports: [CdkDrag, CdkDropList, MatMenuModule, AppointmentFormComponent, RouterLink, MatIcon],
   styleUrls: ['./calendar-day.component.scss']
 })
 export class CalendarDayComponent {
@@ -19,6 +21,11 @@ export class CalendarDayComponent {
   @Output() dayClicked = new EventEmitter<{day: any; trigger: MatMenuTrigger}>();
   @Output() appointmentClicked = new EventEmitter<{appointment: any; trigger: MatMenuTrigger; event: MouseEvent}>();
   @Output() appointmentDropped = new EventEmitter<CdkDragDrop<any>>();
+
+  public dateRoute = computed(() => {
+    const date = this.day().date;
+    return date ? `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}` : null;
+  });
 
   public isEditMode = signal(false);
   public activeFormMenuTrigger = signal<MatMenuTrigger | null>(null);

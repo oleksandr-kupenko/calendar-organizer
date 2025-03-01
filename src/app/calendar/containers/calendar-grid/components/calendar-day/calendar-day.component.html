@@ -15,6 +15,9 @@
 >
   <div class="day-header">
     <span class="day-number">{{ day().date.getDate() }}</span>
+    <a class="day-header__details" [routerLink]="['day', dateRoute()]">
+      <mat-icon>launch</mat-icon>
+    </a>
   </div>
 
   <div class="day-content">

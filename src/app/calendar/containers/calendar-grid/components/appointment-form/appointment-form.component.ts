@@ -15,12 +15,12 @@ import {MatInput} from '@angular/material/input';
 import {MatDatepickerInput, MatDatepickerModule} from '@angular/material/datepicker';
 import {MatOption, MatSelect} from '@angular/material/select';
 import {MatButton} from '@angular/material/button';
-import {getUniqueId} from '../../../utils';
-import {AppointmentFormData, CalendarAppointment} from '../../models/calendar.models';
+import {getUniqueId} from 'src/app/utils';
+import {AppointmentFormData, CalendarAppointment} from '@calendar/models/calendar.models';
 import {MatTimepickerModule} from '@angular/material/timepicker';
-import {CalendarService} from '../../calendar.service';
+import {CalendarService} from '@calendar/calendar.service';
 import {MatMenuTrigger} from '@angular/material/menu';
-import {APPOINTMENTS_COLORS} from '../../../core/constants/appointment.constants';
+import {APPOINTMENTS_COLORS} from '@core/constants/appointment.constants';
 
 @Component({
   selector: 'app-appointment-form',

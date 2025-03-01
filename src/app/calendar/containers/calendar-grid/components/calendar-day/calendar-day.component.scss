@@ -7,6 +7,12 @@
   flex-direction: column;
   will-change: transform;
 
+  &:hover {
+    .day-header__details {
+      display: block;
+    }
+  }
+
   &.outside-month {
     background-color: #f9f9f9;
     color: #a0a0a0;
@@ -25,6 +31,21 @@
     display: flex;
     justify-content: center;
     margin-bottom: 8px;
+    position: relative;
+
+    &__details {
+      display: none;
+      color: var(--color-primary-active);
+      position: absolute;
+      top: 0;
+      right: 0;
+      opacity: 0.6;
+      transition: 0.2s;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
 
     .day-number {
       width: 24px;

@@ -8,8 +8,13 @@ export const routes: Routes = [
   },
   {
     path: 'calendar',
-    loadComponent: () => import('./calendar/calendar.component').then(c => c.CalendarComponent),
+    loadChildren: () => import('./calendar/calendar.routes').then(c => c.calendarRoutes),
     title: 'Calendar'
+  },
+  {
+    path: 'settings',
+    loadComponent: () => import('./settings/settings.component').then(c => c.SettingsComponent),
+    title: 'Settings'
   },
   {
     path: '**',

@@ -1,15 +1,15 @@
 import {inject, Injectable} from '@angular/core';
-import {BehaviorSubject, map, Observable, switchMap} from 'rxjs';
+import {BehaviorSubject, map, Observable, switchMap, tap} from 'rxjs';
 import {CalendarAppointment, CalendarDay, CalendarMonth, CalendarWeek} from './models/calendar.models';
 import {getUniqueId} from '../utils';
-import {WEEKS_PER_MONTH} from '../core/constants/calendar-grid.constants';
-import {LocalStorageService} from '../core/services/localStorage.service';
+import {WEEKS_PER_MONTH} from '@core/constants/calendar-grid.constants';
+import {LocalStorageService} from '@core/services/local-storage.service';
+import {QueryParamsService} from '@core/services/query-params.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({providedIn: 'root'})
 export class CalendarService {
   private localStorageService = inject(LocalStorageService);
+  private queryParamsService = inject(QueryParamsService);
 
   private appointments$$ = new BehaviorSubject<CalendarAppointment[]>([]);
   private currentDate$$ = new BehaviorSubject<Date>(new Date());
@@ -25,6 +25,15 @@ export class CalendarService {
   );
 
   constructor() {
+    const dateParams = this.queryParamsService.getDateParams();
+
+    if (dateParams) {
+      const dateFromParams = new Date();
+      dateFromParams.setFullYear(dateParams.year);
+      dateFromParams.setMonth(dateParams.month - 1);
+      this.currentDate$$.next(dateFromParams);
+    }
+
     this.initAppointments();
   }
 
@@ -34,6 +43,8 @@ export class CalendarService {
     const nextMonth = new Date(currentDate);
     nextMonth.setMonth(nextMonth.getMonth() + 1);
     this.currentDate$$.next(nextMonth);
+
+    this.queryParamsService.setDateParams(nextMonth.getFullYear(), nextMonth.getMonth() + 1);
   }
 
   public previousMonth(): void {
@@ -42,6 +53,8 @@ export class CalendarService {
     const prevMonth = new Date(currentDate);
     prevMonth.setMonth(prevMonth.getMonth() - 1);
     this.currentDate$$.next(prevMonth);
+
+    this.queryParamsService.setDateParams(prevMonth.getFullYear(), prevMonth.getMonth() + 1);
   }
 
   resetSlideDirection() {
@@ -49,7 +62,9 @@ export class CalendarService {
   }
 
   public goToToday(): void {
+    console.log('CLICK');
     const today = new Date();
+    this.queryParamsService.setDateParams(today.getFullYear(), today.getMonth() + 1);
     this.currentDate$$.next(today);
   }
 
@@ -76,19 +91,15 @@ export class CalendarService {
     this.saveAppointments();
   }
 
-  public getAppointmentsByDate(date: Date): Observable<CalendarAppointment[]> {
-    return this.appointments$$.pipe(
-      map(appointments => {
-        return appointments.filter(app => {
-          const appDate = new Date(app.date);
-          return (
-            appDate.getDate() === date.getDate() &&
-            appDate.getMonth() === date.getMonth() &&
-            appDate.getFullYear() === date.getFullYear()
-          );
-        });
-      })
-    );
+  public getAppointmentsByDate(date: Date): CalendarAppointment[] {
+    return this.appointments$$.value.filter(app => {
+      const appDate = new Date(app.date);
+      return (
+        appDate.getDate() === date.getDate() &&
+        appDate.getMonth() === date.getMonth() &&
+        appDate.getFullYear() === date.getFullYear()
+      );
+    });
   }
 
   public moveAppointment(id: string, newDate: Date): void {

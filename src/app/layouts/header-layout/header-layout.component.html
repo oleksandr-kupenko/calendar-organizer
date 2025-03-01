@@ -1,0 +1,15 @@
+<mat-toolbar>
+  <div class="header-container">
+    @if (defaultBackLink()) {
+      <button mat-icon-button (click)="onGoBack()"><mat-icon>arrow_back</mat-icon></button>
+    }
+
+    <div class="title">
+      <h1>{{ layoutTitle() }}</h1>
+    </div>
+
+    <ng-content></ng-content>
+
+    <button class="settings-btn" mat-icon-button [routerLink]="['/settings']"><mat-icon>settings</mat-icon></button>
+  </div>
+</mat-toolbar>

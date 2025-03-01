@@ -1,0 +1,64 @@
+<app-header-layout
+  [layoutTitle]="date()! | date: 'EEEE, MMMM d, y'"
+  [defaultBackLink]="'/calendar'"
+></app-header-layout>
+
+<div
+  class="calendar-day-view"
+  [style.--hour-height.px]="hourHeightPx()"
+  [listenResizeDelay]="300"
+  (listenResize)="gridSize.set($event)"
+>
+  <div class="time-grid-container">
+    <div class="time-scale">
+      @for (hour of hours; track hour) {
+        <div class="hour-marker">
+          <span class="hour-label">{{ hour }}:00</span>
+        </div>
+      }
+    </div>
+
+    <div class="grid-lines">
+      @for (hour of hours; track hour) {
+        <div class="hour-line"></div>
+      }
+    </div>
+
+    <div class="appointments-container">
+      @for (appointment of appointments(); track appointment.id) {
+        <div
+          #menuTrigger="matMenuTrigger"
+          class="appointment-block"
+          [matMenuTriggerFor]="dayMenu"
+          [ngStyle]="{
+            'top.px': getTopPosition(appointment.startTime),
+            'height.px': getHeight(appointment.startTime, appointment.endTime),
+            'background-color': appointment.color,
+            left: getHorizontalPosition(appointment).left,
+            width: getHorizontalPosition(appointment).width
+          }"
+          (click)="handleAppointmentClick(appointment, menuTrigger, $event)"
+        >
+          <div class="appointment-content">
+            <div class="appointment-title">{{ appointment.title }}</div>
+            <div class="appointment-time">{{ appointment.startTime }} - {{ appointment.endTime }}</div>
+            @if (appointment.description) {
+              <div class="appointment-description">
+                {{ appointment.description }}
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<mat-menu #dayMenu="matMenu" xPosition="after" yPosition="above">
+  <app-appointment-form
+    [isEditAppointmentMode]="isEditMode()"
+    [menuTrigger]="activeFormMenuTrigger()"
+    [selectedDate]="selectedDate()"
+    [appointment]="selectedAppointment()"
+  ></app-appointment-form>
+</mat-menu>

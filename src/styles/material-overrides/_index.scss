@@ -25,4 +25,9 @@ body {
       color: white !important;
     }
   }
+
+  .mat-progress-spinner circle,
+  .mat-spinner circle {
+    stroke: #000000 !important;
+  }
 }

@@ -1,0 +1,21 @@
+<app-header-layout>
+  <div class="calendar-actions">
+    <ng-content></ng-content>
+  </div>
+
+  <button [disabled]="isTodayButtonDisabled()" mat-button (click)="goToToday()">Today</button>
+
+  <div class="month-navigation">
+    <button mat-icon-button (click)="previousMonth()">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+
+    <span class="current-month">
+      {{ currentDate() | date: "MMMM yyyy" }}
+    </span>
+
+    <button mat-icon-button (click)="nextMonth()">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+</app-header-layout>
