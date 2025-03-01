@@ -1,4 +1,4 @@
-import {Component, effect, EventEmitter, inject, input, OnInit, Output} from '@angular/core';
+import {Component, effect, inject, input, OnInit} from '@angular/core';
 import {MatCard, MatCardContent, MatCardHeader, MatCardModule} from '@angular/material/card';
 import {
   AbstractControl,
@@ -21,11 +21,10 @@ import {MatTimepickerModule} from '@angular/material/timepicker';
 import {CalendarService} from '@calendar/calendar.service';
 import {MatMenuTrigger} from '@angular/material/menu';
 import {APPOINTMENTS_COLORS} from '@core/constants/appointment.constants';
-import {DateAdapter, MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core';
-import {ThemeService} from '@core/services/theme.service';
+import {DateAdapter} from '@angular/material/core';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {SettingsService} from 'src/app/settings/settings.service';
-import {TIME_FORMAT} from 'src/app/settings/models/settings.models';
+import {REGION_FORMAT} from 'src/app/settings/models/settings.models';
 
 @Component({
   selector: 'app-appointment-form',
@@ -80,11 +79,9 @@ export class AppointmentFormComponent implements OnInit {
     });
 
     effect(() => {
-      if (this.settings()?.timeFormat === TIME_FORMAT.twelveHour) {
-        console.log(1);
+      if (this.settings()?.regionFormat === REGION_FORMAT.american) {
         this._adapter.setLocale('en-US');
       } else {
-        console.log(2);
         this._adapter.setLocale('en-GB');
       }
     });

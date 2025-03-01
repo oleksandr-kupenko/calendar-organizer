@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import {AppSettings, DATE_FORMAT, THEME_MODE, TIME_FORMAT} from 'src/app/settings/models/settings.models';
+import {AppSettings, REGION_FORMAT, THEME_MODE} from 'src/app/settings/models/settings.models';
 import {BehaviorSubject} from 'rxjs';
 import {LocalStorageService} from '@core/services/local-storage.service';
 
@@ -12,8 +12,7 @@ export class SettingsService {
   public getSettings$ = this.settings$$.asObservable();
 
   private defaultSettings: AppSettings = {
-    timeFormat: TIME_FORMAT.twentyFourHour,
-    dateFormat: DATE_FORMAT.mmDdYyyy,
+    regionFormat: REGION_FORMAT.european,
     theme: THEME_MODE.auto
   };
 
@@ -34,5 +33,13 @@ export class SettingsService {
   private initSettings() {
     const savedSettings = this.localStorageService.getSettings() || this.defaultSettings;
     this.settings$$.next(savedSettings);
+  }
+
+  public getDateFormat(regionFormat: REGION_FORMAT): string {
+    return regionFormat === REGION_FORMAT.european ? 'dd/MM/yyyy' : 'MM/dd/yyyy';
+  }
+
+  public getTimeFormat(regionFormat: REGION_FORMAT): string {
+    return regionFormat === REGION_FORMAT.european ? '24' : '12';
   }
 }

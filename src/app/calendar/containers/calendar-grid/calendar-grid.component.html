@@ -1,5 +1,11 @@
 <app-calendar-header>
-  <button mat-raised-button color="primary" #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="menu">
+  <button
+    mat-raised-button
+    color="primary"
+    #menuTrigger="matMenuTrigger"
+    [matMenuTriggerFor]="menu"
+    (click)="handleNewEventClick()"
+  >
     <mat-icon>add</mat-icon> Add event
   </button>
 </app-calendar-header>
@@ -19,8 +25,6 @@
                 [day]="day"
                 [dayCellSize]="dayCellSize()"
                 [allDayIds]="allDayIds() || []"
-                (dayClicked)="handleDayClick($event.day, $event.trigger)"
-                (appointmentClicked)="handleAppointmentClick($event.appointment, $event.trigger, $event.event)"
                 (appointmentDropped)="onDrop($event)"
               ></app-calendar-day-cell>
             }
@@ -36,7 +40,11 @@
 <mat-menu #menu="matMenu" xPosition="after" yPosition="above">
   <div class="appointment-form-container" (click)="$event.stopPropagation()">
     @if (menuTrigger) {
-      <app-appointment-form [menuTrigger]="menuTrigger" [isEditAppointmentMode]="false"></app-appointment-form>
+      <app-appointment-form
+        [menuTrigger]="menuTrigger"
+        [selectedDate]="selectedDate"
+        [isEditAppointmentMode]="false"
+      ></app-appointment-form>
     }
   </div>
 </mat-menu>

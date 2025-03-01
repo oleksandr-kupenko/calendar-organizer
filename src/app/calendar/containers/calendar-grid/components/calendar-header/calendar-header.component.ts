@@ -16,8 +16,8 @@ import {HeaderLayoutComponent} from 'src/app/layouts/header-layout/header-layout
 export class CalendarHeaderComponent {
   private calendarService = inject(CalendarService);
 
-  public readonly currentDate = toSignal(this.calendarService.currentDate$);
-  public readonly currentMonth = toSignal(this.calendarService.calendarMonth$);
+  public readonly currentDate = toSignal(this.calendarService.getCurrentDate$);
+  public readonly currentMonth = toSignal(this.calendarService.getCalendarMonth$);
 
   public isTodayButtonDisabled = computed(() => {
     if (!this.currentDate() || !this.currentMonth()) {

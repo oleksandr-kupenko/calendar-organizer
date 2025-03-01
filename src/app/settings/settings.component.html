@@ -13,24 +13,15 @@
     <mat-card-content>
       <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()">
         <div class="settings-section">
-          <h3>Time Format</h3>
-          <mat-radio-group formControlName="timeFormat" class="radio-group">
-            @for (format of timeFormats; track format.value) {
-              <mat-radio-button [value]="format.value">{{ format.label }}</mat-radio-button>
+          <h3>Regional Format</h3>
+          <mat-radio-group formControlName="regionFormat" class="radio-group">
+            @for (format of regionFormats; track format.value) {
+              <mat-radio-button [value]="format.value">
+                {{ format.label }}
+                <span class="format-hint">{{ format.hint }}</span>
+              </mat-radio-button>
             }
           </mat-radio-group>
-        </div>
-
-        <div class="settings-section">
-          <h3>Date Format</h3>
-          <mat-form-field appearance="fill" class="full-width">
-            <mat-label>Select date format</mat-label>
-            <mat-select formControlName="dateFormat">
-              @for (format of dateFormats; track format.value) {
-                <mat-option [value]="format.value">{{ format.label }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
         </div>
 
         <div class="settings-section">

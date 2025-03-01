@@ -15,7 +15,7 @@
 >
   <div class="day-header">
     <span class="day-number">{{ day().date.getDate() }}</span>
-    <a class="day-header__details" [routerLink]="['day', dateRoute()]">
+    <a matTooltip="View details" class="day-header__details" [routerLink]="['day', dateRoute()]">
       <mat-icon>launch</mat-icon>
     </a>
   </div>
@@ -29,7 +29,10 @@
         [cdkDragData]="appointment"
         (click)="handleAppointmentClick(appointment, menuTrigger, $event)"
       >
-        <div class="appointment-time">{{ appointment.startTime }} - {{ appointment.endTime }}</div>
+        <div class="appointment-time">
+          {{ appointment.startTime | timeFormat: isAmericanFormat() }} -
+          {{ appointment.endTime | timeFormat: isAmericanFormat() }}
+        </div>
         <div class="appointment-title">
           {{ appointment.title }}
         </div>

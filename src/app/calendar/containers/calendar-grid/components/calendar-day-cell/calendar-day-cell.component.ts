@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, input, signal, computed} from '@angular/core';
+import {Component, Input, Output, EventEmitter, input, signal, computed, inject} from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDropList} from '@angular/cdk/drag-drop';
 import {MatMenuModule, MatMenuTrigger} from '@angular/material/menu';
 import {CalendarAppointment, CalendarDay} from '@calendar/models/calendar.models';
@@ -6,11 +6,26 @@ import {ElementSize} from '@core/models/resize.model';
 import {AppointmentFormComponent} from '../appointment-form/appointment-form.component';
 import {RouterLink} from '@angular/router';
 import {MatIcon} from '@angular/material/icon';
+import {TimeFormatPipe} from '@core/pipes/time-format.pipe';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {SettingsService} from 'src/app/settings/settings.service';
+import {map} from 'rxjs';
+import {REGION_FORMAT} from 'src/app/settings/models/settings.models';
+import {MatTooltip} from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-calendar-day-cell',
   templateUrl: './calendar-day-cell.component.html',
-  imports: [CdkDrag, CdkDropList, MatMenuModule, AppointmentFormComponent, RouterLink, MatIcon],
+  imports: [
+    CdkDrag,
+    CdkDropList,
+    MatMenuModule,
+    AppointmentFormComponent,
+    RouterLink,
+    MatIcon,
+    TimeFormatPipe,
+    MatTooltip
+  ],
   styleUrls: ['./calendar-day-cell.component.scss']
 })
 export class CalendarDayCellComponent {
@@ -21,6 +36,10 @@ export class CalendarDayCellComponent {
   @Output() dayClicked = new EventEmitter<{day: any; trigger: MatMenuTrigger}>();
   @Output() appointmentClicked = new EventEmitter<{appointment: any; trigger: MatMenuTrigger; event: MouseEvent}>();
   @Output() appointmentDropped = new EventEmitter<CdkDragDrop<any>>();
+
+  public isAmericanFormat = toSignal(
+    inject(SettingsService).getSettings$.pipe(map(settings => settings?.regionFormat === REGION_FORMAT.american))
+  );
 
   public dateRoute = computed(() => {
     const date = this.day().date;

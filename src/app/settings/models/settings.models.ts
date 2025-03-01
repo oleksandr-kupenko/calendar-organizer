@@ -1,13 +1,6 @@
-export enum TIME_FORMAT {
-  twelveHour = '12',
-  twentyFourHour = '24'
-}
-
-export enum DATE_FORMAT {
-  mmDdYyyy = 'MM/dd/yyyy',
-  ddMmYyyy = 'dd/MM/yyyy',
-  yyyyMmDd = 'yyyy-MM-dd',
-  mmmDYyyy = 'MMM d, yyyy'
+export enum REGION_FORMAT {
+  european = 'european',
+  american = 'american'
 }
 
 export enum THEME_MODE {
@@ -17,7 +10,6 @@ export enum THEME_MODE {
 }
 
 export interface AppSettings {
-  timeFormat: TIME_FORMAT;
-  dateFormat: DATE_FORMAT;
+  regionFormat: REGION_FORMAT;
   theme: THEME_MODE;
 }

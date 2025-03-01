@@ -15,11 +15,11 @@ export class CalendarService {
   private currentDate$$ = new BehaviorSubject<Date>(new Date());
   private slideDirection$$ = new BehaviorSubject<'next' | 'prev' | null>(null);
 
-  public appointments$: Observable<CalendarAppointment[]> = this.appointments$$.asObservable();
-  public currentDate$: Observable<Date> = this.currentDate$$.asObservable();
-  public slideDirection$ = this.slideDirection$$.asObservable();
+  public getAppointments$: Observable<CalendarAppointment[]> = this.appointments$$.asObservable();
+  public getCurrentDate$: Observable<Date> = this.currentDate$$.asObservable();
+  public getSlideDirection$ = this.slideDirection$$.asObservable();
 
-  public calendarMonth$: Observable<CalendarMonth> = this.currentDate$.pipe(
+  public getCalendarMonth$: Observable<CalendarMonth> = this.getCurrentDate$.pipe(
     switchMap(date =>
       this.appointments$$.pipe(map(() => this.generateCalendarMonth(date.getFullYear(), date.getMonth())))
     )
@@ -122,7 +122,6 @@ export class CalendarService {
   private generateCalendarMonth(year: number, month: number): CalendarMonth {
     const weeks: CalendarWeek[] = [];
     const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
 
     // Get the first Sunday before or on the first day of the month
     const firstSunday = new Date(firstDay);

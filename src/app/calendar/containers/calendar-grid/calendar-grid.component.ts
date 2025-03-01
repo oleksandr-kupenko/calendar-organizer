@@ -1,14 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  ElementRef,
-  inject,
-  OnDestroy,
-  signal,
-  viewChild
-} from '@angular/core';
+import {Component, computed, effect, ElementRef, inject, OnDestroy, signal, viewChild} from '@angular/core';
 import {AppointmentFormComponent} from './components/appointment-form/appointment-form.component';
 import {CalendarDayCellComponent} from '@calendar/containers/calendar-grid/components/calendar-day-cell/calendar-day-cell.component';
 import {CalendarHeaderComponent} from './components/calendar-header/calendar-header.component';
@@ -60,8 +50,8 @@ export class CalendarGridComponent implements OnDestroy {
 
   public calendarSectionEl = viewChild<ElementRef>('calendarSectionRef');
 
-  public slideDirection = toSignal(this.calendarService.slideDirection$);
-  public calendarMonth = toSignal(this.calendarService.calendarMonth$);
+  public slideDirection = toSignal(this.calendarService.getSlideDirection$);
+  public calendarMonth = toSignal(this.calendarService.getCalendarMonth$);
 
   public allDayIds = computed(() => {
     return this.calendarMonth()?.weeks.flatMap(week => week.days.flatMap(day => day.id));
@@ -75,6 +65,8 @@ export class CalendarGridComponent implements OnDestroy {
   });
 
   public daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  public selectedDate!: null | Date;
 
   private wheelEventHandler: ((event: WheelEvent) => void) | null = null;
 
@@ -90,9 +82,21 @@ export class CalendarGridComponent implements OnDestroy {
     this.removeWheelListener();
   }
 
-  public handleDayClick(day: CalendarDay, menuTrigger: MatMenuTrigger): void {}
-
-  public handleAppointmentClick(appointment: CalendarAppointment, menuTrigger: MatMenuTrigger, event: Event): void {}
+  public handleNewEventClick() {
+    const startMonthDate = this.calendarMonth()?.weeks[0].days[0].date;
+    const endMonthDate =
+      this.calendarMonth()!.weeks[this.calendarMonth()!.weeks.length - 1].days[
+        this.calendarMonth()!.weeks[this.calendarMonth()!.weeks.length - 1].days.length - 1
+      ].date;
+    const today = new Date();
+    if (startMonthDate && endMonthDate) {
+      if (startMonthDate.getTime() <= today.getTime() && endMonthDate.getTime() >= today.getTime()) {
+        this.selectedDate = today;
+      } else {
+        this.selectedDate = startMonthDate;
+      }
+    }
+  }
 
   public onDrop(event: CdkDragDrop<Date>): void {
     if (event.previousContainer === event.container) {

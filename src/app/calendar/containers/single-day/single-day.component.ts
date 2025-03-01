@@ -12,6 +12,10 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {combineLatest, map, startWith, switchMap} from 'rxjs';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {SettingsService} from 'src/app/settings/settings.service';
+import {REGION_FORMAT} from 'src/app/settings/models/settings.models';
+import {TimeFormatPipe} from '@core/pipes/time-format.pipe';
 
 @Component({
   selector: 'app-single-day',
@@ -26,7 +30,8 @@ import {combineLatest, map, startWith, switchMap} from 'rxjs';
     MatMenuTrigger,
     MatButton,
     MatIcon,
-    MatIconButton
+    MatIconButton,
+    TimeFormatPipe
   ],
   templateUrl: './single-day.component.html',
   styleUrl: './single-day.component.scss',
@@ -35,8 +40,11 @@ import {combineLatest, map, startWith, switchMap} from 'rxjs';
 export class SingleDayComponent implements OnInit {
   route = inject(ActivatedRoute);
   router = inject(Router);
-
   public calendarService = inject(CalendarService);
+
+  public isAmericanFormat = toSignal(
+    inject(SettingsService).getSettings$.pipe(map(settings => settings?.regionFormat === REGION_FORMAT.american))
+  );
 
   public date = signal<Date | null>(null);
   public appointments = signal<CalendarAppointment[]>([]);
@@ -71,7 +79,7 @@ export class SingleDayComponent implements OnInit {
           return this.date();
         }),
         switchMap(date => {
-          return this.calendarService.appointments$.pipe(map(appointments => ({date, appointments})));
+          return this.calendarService.getAppointments$.pipe(map(appointments => ({date, appointments})));
         })
       )
       .subscribe(({date, appointments}) => {

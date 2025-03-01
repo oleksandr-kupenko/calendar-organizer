@@ -5,10 +5,9 @@ import {SettingsService} from 'src/app/settings/settings.service';
 import {MatCardModule} from '@angular/material/card';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatSelectModule} from '@angular/material/select';
 import {MatButtonModule} from '@angular/material/button';
-import {DATE_FORMAT, THEME_MODE, TIME_FORMAT} from 'src/app/settings/models/settings.models';
-import {pipe, take} from 'rxjs';
+import {REGION_FORMAT, THEME_MODE} from 'src/app/settings/models/settings.models';
+import {take} from 'rxjs';
 import {filter} from 'rxjs/operators';
 
 @Component({
@@ -19,7 +18,6 @@ import {filter} from 'rxjs/operators';
     ReactiveFormsModule,
     MatRadioModule,
     MatFormFieldModule,
-    MatSelectModule,
     MatButtonModule
   ],
   templateUrl: './settings.component.html',
@@ -31,16 +29,17 @@ export class SettingsComponent implements OnInit {
 
   public settingsForm!: FormGroup;
 
-  public timeFormats = [
-    {label: '12-hour format (AM/PM)', value: TIME_FORMAT.twelveHour},
-    {label: '24-hour format', value: TIME_FORMAT.twentyFourHour}
-  ];
-
-  public dateFormats = [
-    {label: 'MM/DD/YYYY', value: DATE_FORMAT.mmDdYyyy},
-    {label: 'DD/MM/YYYY', value: DATE_FORMAT.ddMmYyyy},
-    {label: 'YYYY-MM-DD', value: DATE_FORMAT.yyyyMmDd},
-    {label: 'MMM D, YYYY', value: DATE_FORMAT.mmmDYyyy}
+  public regionFormats = [
+    {
+      label: 'European',
+      value: REGION_FORMAT.european,
+      hint: 'Date: DD/MM/YYYY, Time: 24-hour format (14:30)'
+    },
+    {
+      label: 'American',
+      value: REGION_FORMAT.american,
+      hint: 'Date: MM/DD/YYYY, Time: 12-hour format (2:30 PM)'
+    }
   ];
 
   public themeOptions = [
@@ -67,8 +66,7 @@ export class SettingsComponent implements OnInit {
       .subscribe(settings => {
         if (settings) {
           this.settingsForm.patchValue({
-            timeFormat: settings.timeFormat,
-            dateFormat: settings.dateFormat,
+            regionFormat: settings.regionFormat,
             theme: settings.theme
           });
         }
