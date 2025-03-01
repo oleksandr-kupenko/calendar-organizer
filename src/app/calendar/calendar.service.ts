@@ -26,15 +26,7 @@ export class CalendarService {
   );
 
   constructor() {
-    const dateParams = this.queryParamsService.getDateParams();
-
-    if (dateParams) {
-      const dateFromParams = new Date();
-      dateFromParams.setFullYear(dateParams.year);
-      dateFromParams.setMonth(dateParams.month - 1);
-      this.currentDate$$.next(dateFromParams);
-    }
-
+    this.initDateFomQueryParams();
     this.initAppointments();
   }
 
@@ -44,7 +36,6 @@ export class CalendarService {
     const nextMonth = new Date(currentDate);
     nextMonth.setMonth(nextMonth.getMonth() + 1);
     this.currentDate$$.next(nextMonth);
-
     this.queryParamsService.setDateParams(nextMonth.getFullYear(), nextMonth.getMonth() + 1);
   }
 
@@ -182,6 +173,17 @@ export class CalendarService {
   private initAppointments() {
     const savedAppointments = this.localStorageService.getAppointments();
     this.appointments$$.next(savedAppointments);
+  }
+
+  private initDateFomQueryParams() {
+    const dateParams = this.queryParamsService.getDateParams();
+
+    if (dateParams) {
+      const dateFromParams = new Date();
+      dateFromParams.setFullYear(dateParams.year);
+      dateFromParams.setMonth(dateParams.month - 1);
+      this.currentDate$$.next(dateFromParams);
+    }
   }
 
   private saveAppointments() {

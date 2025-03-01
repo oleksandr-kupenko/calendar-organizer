@@ -21,6 +21,7 @@ import {MatTimepickerModule} from '@angular/material/timepicker';
 import {CalendarService} from '@calendar/calendar.service';
 import {MatMenuTrigger} from '@angular/material/menu';
 import {APPOINTMENTS_COLORS} from '@core/constants/appointment.constants';
+import {DateAdapter, MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core';
 
 @Component({
   selector: 'app-appointment-form',
@@ -41,11 +42,13 @@ import {APPOINTMENTS_COLORS} from '@core/constants/appointment.constants';
     MatTimepickerModule
   ],
   templateUrl: './appointment-form.component.html',
-  styleUrl: './appointment-form.component.scss'
+  styleUrl: './appointment-form.component.scss',
+  providers: []
 })
 export class AppointmentFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   private calendarService = inject(CalendarService);
+  private readonly _adapter = inject<DateAdapter<unknown, unknown>>(DateAdapter);
 
   appointment = input<CalendarAppointment | null>(null);
   selectedDate = input<Date | null>(null);
@@ -73,6 +76,7 @@ export class AppointmentFormComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
+    this._adapter.setLocale('en-GB');
   }
 
   public onSubmit(): void {

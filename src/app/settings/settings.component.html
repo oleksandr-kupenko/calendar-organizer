@@ -3,3 +3,54 @@
   [useLocationBackLink]="true"
   [defaultBackLink]="'/calendar'"
 ></app-header-layout>
+
+<div class="content">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Application Settings</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()">
+        <!-- Time Format -->
+        <div class="settings-section">
+          <h3>Time Format</h3>
+          <mat-radio-group formControlName="timeFormat" class="radio-group">
+            @for (format of timeFormats; track format.value) {
+              <mat-radio-button [value]="format.value">{{ format.label }}</mat-radio-button>
+            }
+          </mat-radio-group>
+        </div>
+
+        <!-- Date Format -->
+        <div class="settings-section">
+          <h3>Date Format</h3>
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Select date format</mat-label>
+            <mat-select formControlName="dateFormat">
+              @for (format of dateFormats; track format.value) {
+                <mat-option [value]="format.value">{{ format.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Theme Selection -->
+        <div class="settings-section">
+          <h3>Theme</h3>
+          <mat-radio-group formControlName="theme" class="radio-group">
+            @for (option of themeOptions; track option.value) {
+              <mat-radio-button [value]="option.value">{{ option.label }}</mat-radio-button>
+            }
+          </mat-radio-group>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" mat-button (click)="onCancel()">Cancel</button>
+          <button type="button" mat-button (click)="resetToDefaults()">Reset to Defaults</button>
+          <button type="submit" mat-raised-button color="primary">Save Settings</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
