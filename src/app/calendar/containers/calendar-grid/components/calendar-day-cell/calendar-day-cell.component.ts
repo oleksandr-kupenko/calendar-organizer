@@ -1,19 +1,19 @@
 import {Component, Input, Output, EventEmitter, input, signal, computed} from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDropList} from '@angular/cdk/drag-drop';
 import {MatMenuModule, MatMenuTrigger} from '@angular/material/menu';
-import {CalendarAppointment, CalendarDay} from '../../../../models/calendar.models';
+import {CalendarAppointment, CalendarDay} from '@calendar/models/calendar.models';
 import {ElementSize} from '@core/models/resize.model';
 import {AppointmentFormComponent} from '../appointment-form/appointment-form.component';
 import {RouterLink} from '@angular/router';
 import {MatIcon} from '@angular/material/icon';
 
 @Component({
-  selector: 'app-calendar-day',
-  templateUrl: './calendar-day.component.html',
+  selector: 'app-calendar-day-cell',
+  templateUrl: './calendar-day-cell.component.html',
   imports: [CdkDrag, CdkDropList, MatMenuModule, AppointmentFormComponent, RouterLink, MatIcon],
-  styleUrls: ['./calendar-day.component.scss']
+  styleUrls: ['./calendar-day-cell.component.scss']
 })
-export class CalendarDayComponent {
+export class CalendarDayCellComponent {
   day = input.required<CalendarDay>();
   allDayIds = input.required<string[]>();
   dayCellSize = input.required<ElementSize>();
@@ -24,7 +24,7 @@ export class CalendarDayComponent {
 
   public dateRoute = computed(() => {
     const date = this.day().date;
-    return date ? `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}` : null;
+    return date ? `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}` : null;
   });
 
   public isEditMode = signal(false);

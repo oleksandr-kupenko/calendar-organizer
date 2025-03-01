@@ -8,6 +8,13 @@ export interface CalendarAppointment {
   color?: string;
 }
 
+export interface ExtendedCalendarAppointment extends CalendarAppointment {
+  top: number;
+  height: number;
+  left: string;
+  width: string;
+}
+
 export interface CalendarDay {
   id: string;
   date: Date;

@@ -37,7 +37,6 @@ export class CalendarHeaderComponent {
   }
 
   goToToday(): void {
-    console.log(222);
     this.calendarService.goToToday();
   }
 

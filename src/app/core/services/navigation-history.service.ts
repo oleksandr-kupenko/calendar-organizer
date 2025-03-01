@@ -18,14 +18,6 @@ export class NavigationHistoryService {
     });
   }
 
-  public getPreviousUrl(): string | null {
-    console.log('History', this.history);
-    if (this.history.length > 1) {
-      return this.history[this.history.length - 2];
-    }
-    return null;
-  }
-
   public hasPreviousNavigation(): boolean {
     return this.history.length > 0;
   }

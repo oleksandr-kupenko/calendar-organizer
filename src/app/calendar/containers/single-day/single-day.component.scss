@@ -1,4 +1,8 @@
-$hourHeight: (--hour-height);
+.days-control {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
 
 .calendar-day-view {
   display: flex;

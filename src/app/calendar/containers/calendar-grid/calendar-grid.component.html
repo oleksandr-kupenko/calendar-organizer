@@ -20,14 +20,14 @@
         >
           @for (week of calendarMonth()!.weeks; track $index) {
             @for (day of week.days; track day.date.getTime()) {
-              <app-calendar-day
+              <app-calendar-day-cell
                 [day]="day"
                 [dayCellSize]="dayCellSize()"
                 [allDayIds]="allDayIds() || []"
                 (dayClicked)="handleDayClick($event.day, $event.trigger)"
                 (appointmentClicked)="handleAppointmentClick($event.appointment, $event.trigger, $event.event)"
                 (appointmentDropped)="onDrop($event)"
-              ></app-calendar-day>
+              ></app-calendar-day-cell>
             }
           }
         </div>

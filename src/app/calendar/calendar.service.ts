@@ -15,6 +15,7 @@ export class CalendarService {
   private currentDate$$ = new BehaviorSubject<Date>(new Date());
   private slideDirection$$ = new BehaviorSubject<'next' | 'prev' | null>(null);
 
+  public appointments$: Observable<CalendarAppointment[]> = this.appointments$$.asObservable();
   public currentDate$: Observable<Date> = this.currentDate$$.asObservable();
   public slideDirection$ = this.slideDirection$$.asObservable();
 
@@ -62,9 +63,20 @@ export class CalendarService {
   }
 
   public goToToday(): void {
-    console.log('CLICK');
     const today = new Date();
     this.queryParamsService.setDateParams(today.getFullYear(), today.getMonth() + 1);
+
+    const currentYear = this.currentDate$$.value.getFullYear();
+    const todayYear = today.getFullYear();
+    const currentMonth = this.currentDate$$.value.getMonth();
+    const todayMonth = today.getMonth();
+
+    if (currentYear > todayYear || (currentYear === todayYear && currentMonth > todayMonth)) {
+      this.slideDirection$$.next('prev');
+    } else if (currentYear < todayYear || (currentYear === todayYear && currentMonth < todayMonth)) {
+      this.slideDirection$$.next('next');
+    }
+
     this.currentDate$$.next(today);
   }
 

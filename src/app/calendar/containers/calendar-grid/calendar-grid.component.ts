@@ -1,6 +1,6 @@
 import {Component, computed, effect, ElementRef, inject, OnDestroy, signal, viewChild} from '@angular/core';
 import {AppointmentFormComponent} from './components/appointment-form/appointment-form.component';
-import {CalendarDayComponent} from './components/calendar-day/calendar-day.component';
+import {CalendarDayCellComponent} from '@calendar/containers/calendar-grid/components/calendar-day-cell/calendar-day-cell.component';
 import {CalendarHeaderComponent} from './components/calendar-header/calendar-header.component';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
@@ -26,7 +26,7 @@ import {MatProgressSpinner} from '@angular/material/progress-spinner';
     MatNativeDateModule,
     CalendarHeaderComponent,
     ResizeDirective,
-    CalendarDayComponent,
+    CalendarDayCellComponent,
     MatProgressSpinner
   ],
   templateUrl: './calendar-grid.component.html',

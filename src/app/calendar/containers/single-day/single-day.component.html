@@ -1,7 +1,26 @@
-<app-header-layout
-  [layoutTitle]="date()! | date: 'EEEE, MMMM d, y'"
-  [defaultBackLink]="'/calendar'"
-></app-header-layout>
+<app-header-layout [layoutTitle]="null" [defaultBackLink]="backBacklink()">
+  <div class="days-control">
+    <button mat-icon-button (click)="onPreviousDay()">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <span class="current-date">
+      {{ date()! | date: "MMMM d, y" }}
+    </span>
+    <button mat-icon-button (click)="onNextDay()">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+
+  <button
+    mat-raised-button
+    color="primary"
+    #menuTrigger="matMenuTrigger"
+    [matMenuTriggerFor]="menu"
+    (click)="handleNewEventClick(menuTrigger)"
+  >
+    <mat-icon>add</mat-icon> Add event
+  </button>
+</app-header-layout>
 
 <div
   class="calendar-day-view"
@@ -25,17 +44,17 @@
     </div>
 
     <div class="appointments-container">
-      @for (appointment of appointments(); track appointment.id) {
+      @for (appointment of displayAppointments(); track appointment.id) {
         <div
           #menuTrigger="matMenuTrigger"
           class="appointment-block"
-          [matMenuTriggerFor]="dayMenu"
+          [matMenuTriggerFor]="menu"
           [ngStyle]="{
-            'top.px': getTopPosition(appointment.startTime),
-            'height.px': getHeight(appointment.startTime, appointment.endTime),
+            'top.px': appointment.top,
+            'height.px': appointment.height,
             'background-color': appointment.color,
-            left: getHorizontalPosition(appointment).left,
-            width: getHorizontalPosition(appointment).width
+            left: appointment.left,
+            width: appointment.width
           }"
           (click)="handleAppointmentClick(appointment, menuTrigger, $event)"
         >
@@ -54,7 +73,7 @@
   </div>
 </div>
 
-<mat-menu #dayMenu="matMenu" xPosition="after" yPosition="above">
+<mat-menu #menu="matMenu" xPosition="after" yPosition="above">
   <app-appointment-form
     [isEditAppointmentMode]="isEditMode()"
     [menuTrigger]="activeFormMenuTrigger()"

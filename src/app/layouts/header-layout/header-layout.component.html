@@ -1,7 +1,7 @@
 <mat-toolbar>
   <div class="header-container">
     @if (defaultBackLink()) {
-      <button mat-icon-button (click)="onGoBack()"><mat-icon>arrow_back</mat-icon></button>
+      <button mat-icon-button matTooltip="Go back" (click)="onGoBack()"><mat-icon>arrow_back</mat-icon></button>
     }
 
     <div class="title">
@@ -10,6 +10,8 @@
 
     <ng-content></ng-content>
 
-    <button class="settings-btn" mat-icon-button [routerLink]="['/settings']"><mat-icon>settings</mat-icon></button>
+    <button class="settings-btn" mat-icon-button matTooltip="Settings" [routerLink]="['/settings']">
+      <mat-icon>settings</mat-icon>
+    </button>
   </div>
 </mat-toolbar>
