@@ -1,5 +1,7 @@
 # Simple Calendar Organizer 
 
+### [Example of work](https://oleksandr-kupenko.github.io/calendar-organizer/calendar)
+
 ## Stack
 
 1. Angular 19
