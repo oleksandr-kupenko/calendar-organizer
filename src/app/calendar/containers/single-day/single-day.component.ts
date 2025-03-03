@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, OnInit, signal} from '@angular/core';
 import {HeaderLayoutComponent} from 'src/app/layouts/header-layout/header-layout.component';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CalendarService} from '../../calendar.service';
@@ -12,7 +12,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {combineLatest, map, startWith, switchMap} from 'rxjs';
-import {toSignal} from '@angular/core/rxjs-interop';
+import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {SettingsService} from 'src/app/settings/settings.service';
 import {REGION_FORMAT} from 'src/app/settings/models/settings.models';
 import {TimeFormatPipe} from '@core/pipes/time-format.pipe';
@@ -69,10 +69,13 @@ export class SingleDayComponent implements OnInit {
     return 'calendar?month=' + currentMonth + '&year=' + currentYear;
   });
 
+  private destroyRef = inject(DestroyRef);
+
   constructor() {}
 
   ngOnInit() {
     this.route.paramMap
+
       .pipe(
         map(params => {
           this.initSingleDayDate();
@@ -80,7 +83,8 @@ export class SingleDayComponent implements OnInit {
         }),
         switchMap(date => {
           return this.calendarService.getAppointments$.pipe(map(appointments => ({date, appointments})));
-        })
+        }),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(({date, appointments}) => {
         if (date) {

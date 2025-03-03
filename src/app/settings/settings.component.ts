@@ -61,6 +61,7 @@ export class SettingsComponent implements OnInit {
     this.settingsService.getSettings$
       .pipe(
         filter(settings => !!settings),
+        // unsubscribe after first value
         take(1)
       )
       .subscribe(settings => {
