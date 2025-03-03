@@ -1,4 +1,4 @@
-import {Directive, ElementRef, EventEmitter, NgZone, OnDestroy, OnInit, Output, effect, input} from '@angular/core';
+import {Directive, effect, ElementRef, input, NgZone, OnDestroy, output, OutputEmitterRef} from '@angular/core';
 import {ElementSize} from '../models/resize.model';
 
 @Directive({
@@ -11,7 +11,7 @@ export class ResizeDirective implements OnDestroy {
   firstChildResize = input<boolean>(false);
   listenResizeDelay = input<number>(0);
 
-  @Output() listenResize = new EventEmitter<ElementSize>();
+  listenResize: OutputEmitterRef<ElementSize> = output();
 
   private resizeObserver: ResizeObserver | null = null;
   private isFirstValue = true;

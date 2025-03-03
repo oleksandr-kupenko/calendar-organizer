@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, input, signal, computed, inject} from '@angular/core';
+import {Component, computed, inject, input, output, OutputEmitterRef, signal} from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDropList} from '@angular/cdk/drag-drop';
 import {MatMenuModule, MatMenuTrigger} from '@angular/material/menu';
 import {CalendarAppointment, CalendarDay} from '@calendar/models/calendar.models';
@@ -33,9 +33,9 @@ export class CalendarDayCellComponent {
   allDayIds = input.required<string[]>();
   dayCellSize = input.required<ElementSize>();
 
-  @Output() dayClicked = new EventEmitter<{day: any; trigger: MatMenuTrigger}>();
-  @Output() appointmentClicked = new EventEmitter<{appointment: any; trigger: MatMenuTrigger; event: MouseEvent}>();
-  @Output() appointmentDropped = new EventEmitter<CdkDragDrop<any>>();
+  dayClicked: OutputEmitterRef<{day: any; trigger: MatMenuTrigger}> = output();
+  appointmentClicked: OutputEmitterRef<{appointment: any; trigger: MatMenuTrigger; event: MouseEvent}> = output();
+  appointmentDropped: OutputEmitterRef<CdkDragDrop<any>> = output();
 
   public isAmericanFormat = toSignal(
     inject(SettingsService).getSettings$.pipe(map(settings => settings?.regionFormat === REGION_FORMAT.american))
